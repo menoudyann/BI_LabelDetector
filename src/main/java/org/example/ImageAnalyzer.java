@@ -14,17 +14,24 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class ImageAnalyzer {
 
-    public ImageAnalyzer(String credential) {
+    protected static ImageAnnotatorClient client;
+
+    public ImageAnalyzer(String credentialPathname) {
         Dotenv dotenv = Dotenv.load();
 
-        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(dotenv.get("credentialsPath")));
-        ImageAnnotatorSettings imageAnnotatorSettings = ImageAnnotatorSettings.newBuilder()
-                .setCredentialsProvider(FixedCredentialsProvider.create(credentials))
-                .build();
+        try {
+            GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(dotenv.get(credentialPathname)))
+                    .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
+            ImageAnnotatorSettings settings = ImageAnnotatorSettings.newBuilder()
+                    .setCredentialsProvider(FixedCredentialsProvider.create(credentials)).build();
+            client = ImageAnnotatorClient.create(settings);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public static void detectFaces(String filePath) throws IOException {
-
 
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -35,7 +42,7 @@ public class ImageAnalyzer {
         AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
         requests.add(request);
 
-        try (ImageAnnotatorClient client = ImageAnnotatorClient.create(imageAnnotatorSettings)) {
+        try {
             BatchAnnotateImagesResponse response = client.batchAnnotateImages(requests);
             List<AnnotateImageResponse> responses = response.getResponsesList();
 
@@ -50,6 +57,8 @@ public class ImageAnalyzer {
                     System.out.format("anger: %s%njoy: %s%nsurprise: %s%nposition: %s", annotation.getAngerLikelihood(), annotation.getJoyLikelihood(), annotation.getSurpriseLikelihood(), annotation.getBoundingPoly());
                 }
             }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
     }
 }
