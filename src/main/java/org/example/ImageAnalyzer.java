@@ -31,7 +31,9 @@ public class ImageAnalyzer {
 
     }
 
-    public static void detectFaces(String filePath) throws IOException {
+    public static List<FaceData> detectFaceData(String filePath) throws IOException {
+
+        List<FaceData> result = new ArrayList<>();
 
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -49,16 +51,21 @@ public class ImageAnalyzer {
             for (AnnotateImageResponse res : responses) {
                 if (res.hasError()) {
                     System.out.format("Error: %s%n", res.getError().getMessage());
-                    return;
                 }
 
-                // For full list of available annotations, see http://g.co/cloud/vision/docs
                 for (FaceAnnotation annotation : res.getFaceAnnotationsList()) {
-                    System.out.format("anger: %s%njoy: %s%nsurprise: %s%nposition: %s", annotation.getAngerLikelihood(), annotation.getJoyLikelihood(), annotation.getSurpriseLikelihood(), annotation.getBoundingPoly());
+                    FaceData faceData = new FaceData(
+                            annotation.getAngerLikelihoodValue(),
+                            annotation.getJoyLikelihoodValue(),
+                            annotation.getSurpriseLikelihoodValue(),
+                            annotation.getDetectionConfidence()
+                    );
+                    result.add(faceData);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        return result;
     }
 }
