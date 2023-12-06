@@ -12,11 +12,11 @@ import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
 import io.github.cdimascio.dotenv.Dotenv;
 
-public class GoogleImageAnalyzer implements ImageAnalyzer {
+public class GoogleLabelDetector implements ILabelDetector {
 
     protected static ImageAnnotatorClient client;
 
-    public GoogleImageAnalyzer(String credentialPathname) {
+    public GoogleLabelDetector(String credentialPathname) {
         Dotenv dotenv = Dotenv.load();
 
         try {
@@ -51,17 +51,16 @@ public class GoogleImageAnalyzer implements ImageAnalyzer {
                     System.out.format("Error: %s%n", res.getError().getMessage());
                 }
 
-
-                for (FaceAnnotation annotation : res.getFaceAnnotationsList()) {
-                    System.out.println("ANNONATION");
-                    System.out.println(annotation);
+                List<FaceAnnotation> faceAnnotations = res.getFaceAnnotationsList();
+                for (FaceAnnotation annotation : faceAnnotations) {
+                    FaceData faceData = new FaceData(annotation);
+                    facesData.add(faceData);
                 }
-                FaceData faceData = new FaceData(res.getFaceAnnotationsList());
-                facesData.add(faceData);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        System.out.println(facesData.size());
         return facesData;
     }
 }

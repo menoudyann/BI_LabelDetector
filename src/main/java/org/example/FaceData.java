@@ -1,18 +1,15 @@
 package org.example;
 
+
 import com.google.cloud.vision.v1.FaceAnnotation;
 
 import java.util.List;
 
 public class FaceData {
 
-    protected List details;
+    protected FaceAnnotation details;
 
-    public FaceData(List<FaceAnnotation> faceAnnotations) {
+    public FaceData(FaceAnnotation faceAnnotations) {
         this.details = faceAnnotations;
-    }
-
-    public List getDetails() {
-        return details;
     }
 }
