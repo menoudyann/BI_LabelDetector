@@ -31,7 +31,7 @@ public class GoogleImageAnalyzer implements ImageAnalyzer {
 
     public List<FaceData> detectFaceData(String filePath) throws IOException {
 
-        List<FaceData> result = new ArrayList<>();
+        List<FaceData> facesData = new ArrayList<>();
 
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
@@ -51,12 +51,17 @@ public class GoogleImageAnalyzer implements ImageAnalyzer {
                     System.out.format("Error: %s%n", res.getError().getMessage());
                 }
 
+
+                for (FaceAnnotation annotation : res.getFaceAnnotationsList()) {
+                    System.out.println("ANNONATION");
+                    System.out.println(annotation);
+                }
                 FaceData faceData = new FaceData(res.getFaceAnnotationsList());
-                result.add(faceData);
+                facesData.add(faceData);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return result;
+        return facesData;
     }
 }
