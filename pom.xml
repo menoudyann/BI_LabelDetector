@@ -65,7 +65,10 @@
             <version>3.0.0</version>
         </dependency>
         <!-- [END_EXCLUDE] -->
+        <dependency>
+            <groupId>com.dieselpoint</groupId>
+            <artifactId>norm</artifactId>
+            <version>1.0.5</version>
+        </dependency>
     </dependencies>
-
-
 </project>
