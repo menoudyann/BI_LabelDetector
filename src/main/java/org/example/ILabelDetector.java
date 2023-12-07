@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface ILabelDetector {
 
-    public List<FaceData> detectFaceData(String filePath) throws IOException;
+    public List<Label> analyze(String remoteFullPath, int maxLabels, float minConfidenceLevel) throws IOException;
 }

@@ -7,8 +7,8 @@ public class Main {
     public static void main(String[] args) {
         String filePath = "src/main/java/org/example/datas/banner.jpg";
         try {
-            GoogleLabelDetector googleImageAnalyzer = new GoogleLabelDetector("GOOGLE_APPLICATION_CREDENTIALS");
-            List<FaceData> faceDatas = googleImageAnalyzer.detectFaceData(filePath);
+            GoogleLabelDetectorImpl googleImageAnalyzer = new GoogleLabelDetectorImpl("GOOGLE_APPLICATION_CREDENTIALS");
+            List<Label> faceDatas = googleImageAnalyzer.analyze(filePath, 10, 0.7F);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

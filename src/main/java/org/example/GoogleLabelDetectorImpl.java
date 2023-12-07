@@ -3,20 +3,20 @@ package org.example;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Descriptors;
 import io.github.cdimascio.dotenv.Dotenv;
 
-public class GoogleLabelDetector implements ILabelDetector {
+public class GoogleLabelDetectorImpl implements ILabelDetector {
 
     protected static ImageAnnotatorClient client;
 
-    public GoogleLabelDetector(String credentialPathname) {
+    public GoogleLabelDetectorImpl(String credentialPathname) {
         Dotenv dotenv = Dotenv.load();
 
         try {
@@ -29,13 +29,12 @@ public class GoogleLabelDetector implements ILabelDetector {
 
     }
 
-    public List<FaceData> detectFaceData(String filePath) throws IOException {
+    public List<Label> analyze(String remoteFullPath, int maxLabels, float minConfidenceLevel) throws IOException {
 
-        List<FaceData> facesData = new ArrayList<>();
-
+        List<Label> labels = new ArrayList<>();
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
-        ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+        ByteString imgBytes = ByteString.readFrom(new FileInputStream(remoteFullPath));
 
         Image img = Image.newBuilder().setContent(imgBytes).build();
         Feature feat = Feature.newBuilder().setType(Feature.Type.FACE_DETECTION).build();
@@ -50,17 +49,22 @@ public class GoogleLabelDetector implements ILabelDetector {
                 if (res.hasError()) {
                     System.out.format("Error: %s%n", res.getError().getMessage());
                 }
-
                 List<FaceAnnotation> faceAnnotations = res.getFaceAnnotationsList();
                 for (FaceAnnotation annotation : faceAnnotations) {
-                    FaceData faceData = new FaceData(annotation);
-                    facesData.add(faceData);
+                    Map<Descriptors.FieldDescriptor, Object> fields = annotation.getAllFields();
+                    for (Map.Entry<Descriptors.FieldDescriptor, Object> entry : fields.entrySet()) {
+                        String key = entry.getKey().getName();
+                        Object value = entry.getValue();
+                        if (value instanceof Number) {
+                            Label label = new Label(key, (float) value);
+                            labels.add(label);
+                        }
+                    }
                 }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        System.out.println(facesData.size());
-        return facesData;
+        return labels;
     }
 }
