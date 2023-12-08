@@ -15,9 +15,11 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class GoogleLabelDetectorImpl implements ILabelDetector {
 
     protected static ImageAnnotatorClient client;
+    protected Database database;
 
     public GoogleLabelDetectorImpl(String credentialPathname) {
         Dotenv dotenv = Dotenv.load();
+        database = new Database();
 
         try {
             GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(dotenv.get(credentialPathname))).createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
@@ -58,6 +60,7 @@ public class GoogleLabelDetectorImpl implements ILabelDetector {
                         if (value instanceof Number) {
                             Label label = new Label(key, (float) value);
                             labels.add(label);
+                            database.getConnection().insert(label);
                         }
                     }
                 }

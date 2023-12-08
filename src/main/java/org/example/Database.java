@@ -9,8 +9,12 @@ public class Database {
     public Database() {
         Dotenv dotenv = Dotenv.load();
         connection = new com.dieselpoint.norm.Database();
-        connection.setJdbcUrl("jdbc:mysql://" + dotenv.get("DB_HOST") + ":" + dotenv.get("DB_PORT") + "/" + dotenv.get("DB_NAME") + "?useSSL=false");
+        connection.setJdbcUrl("jdbc:mysql://" + dotenv.get("DB_HOST") + ":" + dotenv.get("DB_PORT") + "/" + dotenv.get("DB_NAME"));
         connection.setUser(dotenv.get("DB_USER"));
         connection.setPassword(dotenv.get("DB_PASSWORD"));
+    }
+
+    public com.dieselpoint.norm.Database getConnection() {
+        return connection;
     }
 }
