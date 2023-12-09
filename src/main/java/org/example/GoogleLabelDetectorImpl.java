@@ -12,6 +12,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import io.github.cdimascio.dotenv.Dotenv;
 
+import javax.persistence.Table;
+
 public class GoogleLabelDetectorImpl implements ILabelDetector {
 
     protected static ImageAnnotatorClient client;
@@ -59,8 +61,10 @@ public class GoogleLabelDetectorImpl implements ILabelDetector {
                         Object value = entry.getValue();
                         if (value instanceof Number) {
                             Label label = new Label(key, (float) value);
+                            database.getConnection().sql("INSERT INTO labels (name, value) VALUES (?, ?)", label.getName(), label.getValue()).execute();
+                            //database.getConnection().sql("INSERT INTO images (url) VALUES (?)", remoteFullPath).execute();
+                            //database.getConnection().sql("INSERT INTO history (image_id, label_id) VALUES (?, ?)", label.getName(), label.getValue()).execute();
                             labels.add(label);
-                            database.getConnection().insert(label);
                         }
                     }
                 }

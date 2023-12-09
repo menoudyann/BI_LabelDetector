@@ -13,7 +13,6 @@ public class Database {
         connection.setUser(dotenv.get("DB_USER"));
         connection.setPassword(dotenv.get("DB_PASSWORD"));
     }
-
     public com.dieselpoint.norm.Database getConnection() {
         return connection;
     }
