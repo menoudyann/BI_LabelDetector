@@ -41,7 +41,7 @@ public class GoogleLabelDetectorImpl implements ILabelDetector {
         ByteString imgBytes = ByteString.readFrom(new FileInputStream(remoteFullPath));
 
         Image img = Image.newBuilder().setContent(imgBytes).build();
-        Feature feat = Feature.newBuilder().setType(Feature.Type.FACE_DETECTION).build();
+        Feature feat = Feature.newBuilder().setType(Feature.Type.FACE_DETECTION).setMaxResults(maxLabels).build();
         AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
         requests.add(request);
 
@@ -55,16 +55,15 @@ public class GoogleLabelDetectorImpl implements ILabelDetector {
                 }
                 List<FaceAnnotation> faceAnnotations = res.getFaceAnnotationsList();
                 for (FaceAnnotation annotation : faceAnnotations) {
-                    Map<Descriptors.FieldDescriptor, Object> fields = annotation.getAllFields();
-                    for (Map.Entry<Descriptors.FieldDescriptor, Object> entry : fields.entrySet()) {
-                        String key = entry.getKey().getName();
-                        Object value = entry.getValue();
-                        if (value instanceof Number) {
-                            Label label = new Label(key, (float) value);
-                            database.getConnection().sql("INSERT INTO labels (name, value) VALUES (?, ?)", label.getName(), label.getValue()).execute();
-                            //database.getConnection().sql("INSERT INTO images (url) VALUES (?)", remoteFullPath).execute();
-                            //database.getConnection().sql("INSERT INTO history (image_id, label_id) VALUES (?, ?)", label.getName(), label.getValue()).execute();
-                            labels.add(label);
+                    if (annotation.getDetectionConfidence() > minConfidenceLevel){
+                        Map<Descriptors.FieldDescriptor, Object> fields = annotation.getAllFields();
+                        for (Map.Entry<Descriptors.FieldDescriptor, Object> entry : fields.entrySet()) {
+                            String key = entry.getKey().getName();
+                            Object value = entry.getValue();
+                            if (value instanceof Number) {
+                                Label label = new Label(key, (float) value);
+                                labels.add(label);
+                            }
                         }
                     }
                 }

@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.URL;
 
 public interface IDataObject {
-    public boolean doesObjectExist();
     public void uploadObject(byte[] file, String remoteFullPath);
     public File downloadObject(byte[] file, String localFullPath);
     public URL publishObject(String remoteFullPath, int expirationTime);
