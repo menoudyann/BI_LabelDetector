@@ -12,16 +12,13 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import io.github.cdimascio.dotenv.Dotenv;
 
-import javax.persistence.Table;
 
 public class GoogleLabelDetectorImpl implements ILabelDetector {
 
     protected static ImageAnnotatorClient client;
-    protected Database database;
 
     public GoogleLabelDetectorImpl(String credentialPathname) {
         Dotenv dotenv = Dotenv.load();
-        database = new Database();
 
         try {
             GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(dotenv.get(credentialPathname))).createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
@@ -55,7 +52,7 @@ public class GoogleLabelDetectorImpl implements ILabelDetector {
                 }
                 List<FaceAnnotation> faceAnnotations = res.getFaceAnnotationsList();
                 for (FaceAnnotation annotation : faceAnnotations) {
-                    if (annotation.getDetectionConfidence() > minConfidenceLevel){
+                    if (annotation.getDetectionConfidence() >= minConfidenceLevel){
                         Map<Descriptors.FieldDescriptor, Object> fields = annotation.getAllFields();
                         for (Map.Entry<Descriptors.FieldDescriptor, Object> entry : fields.entrySet()) {
                             String key = entry.getKey().getName();

@@ -1,7 +1,5 @@
 package org.example;
 
-import javax.persistence.Table;
-
 public class Label {
 
     protected int id;
