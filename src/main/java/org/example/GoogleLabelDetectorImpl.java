@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import com.google.api.gax.core.FixedCredentialsProvider;
@@ -33,21 +35,38 @@ public class GoogleLabelDetectorImpl implements ILabelDetector {
     }
 
     @Override
-    public String analyze(URL remoteFullPath) throws IOException {
+    public String analyze(URL remoteFullPath) throws IOException, URISyntaxException {
         return analyze(remoteFullPath, 10, 90);
     }
 
+    @Override
+    public String analyze(URL remoteFullPath , int maxLabels) throws IOException, URISyntaxException {
+        return analyze(remoteFullPath, maxLabels, 90);
+    }
 
     @Override
-    public String analyze(URL remoteFullPath, int maxLabels, float minConfidenceLevel) throws IOException {
+    public String analyze(URL remoteFullPath, float minConfidenceLevel) throws IOException, URISyntaxException {
+        return analyze(remoteFullPath, 10, minConfidenceLevel);
+    }
+
+    @Override
+    public String analyze(URL remoteFullPath, int maxLabels, float minConfidenceLevel) throws IOException, URISyntaxException {
 
         List<Label> labels = new ArrayList<>();
         Gson gson = new Gson();
 
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
-        ImageSource imgSource = ImageSource.newBuilder().setImageUri(remoteFullPath.toString()).build();
-        Image img = Image.newBuilder().setSource(imgSource).build();
+        Image img;
+        if ("file".equals(remoteFullPath.getProtocol())) {
+            byte[] data = Files.readAllBytes(Paths.get(remoteFullPath.toURI()));
+            ByteString imgBytes = ByteString.copyFrom(data);
+            img = Image.newBuilder().setContent(imgBytes).build();
+        } else {
+            ImageSource imgSource = ImageSource.newBuilder().setImageUri(remoteFullPath.toString()).build();
+            img = Image.newBuilder().setSource(imgSource).build();
+        }
+
         Feature feat = Feature.newBuilder().setType(Feature.Type.LABEL_DETECTION).setMaxResults(maxLabels).build();
         AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
         requests.add(request);
