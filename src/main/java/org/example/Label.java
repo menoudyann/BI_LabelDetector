@@ -2,26 +2,21 @@ package org.example;
 
 public class Label {
 
-    protected int id;
     protected String name;
-    protected float value;
+    protected float score;
 
 
-    public Label(String name, float value) {
+    public Label(String name, float score) {
         this.name = name;
-        this.value = value;
+        this.score = score;
     }
 
     public String getName() {
         return name;
     }
 
-    public float getValue() {
-        return value;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public float getScore() {
+        return score;
     }
 
 }
