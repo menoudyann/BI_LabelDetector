@@ -2,12 +2,11 @@ package org.example;
 
 public class Label {
 
-    protected int id;
     protected String name;
-    protected float value;
+    protected Object value;
 
 
-    public Label(String name, float value) {
+    public Label(String name, Object value) {
         this.name = name;
         this.value = value;
     }
@@ -16,12 +15,8 @@ public class Label {
         return name;
     }
 
-    public float getValue() {
+    public Object getValue() {
         return value;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
 }

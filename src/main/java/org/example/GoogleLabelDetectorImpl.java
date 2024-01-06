@@ -3,11 +3,13 @@ package org.example;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.vision.v1.*;
+import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -27,18 +29,20 @@ public class GoogleLabelDetectorImpl implements ILabelDetector {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
-    public List<Label> analyze(String remoteFullPath, int maxLabels, float minConfidenceLevel) throws IOException {
+
+    @Override
+    public String analyze(String remoteFullPath, int maxLabels, float minConfidenceLevel) throws IOException {
 
         List<Label> labels = new ArrayList<>();
+        Gson gson = new Gson();
+
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
-        ByteString imgBytes = ByteString.readFrom(new FileInputStream(remoteFullPath));
-
-        Image img = Image.newBuilder().setContent(imgBytes).build();
-        Feature feat = Feature.newBuilder().setType(Feature.Type.FACE_DETECTION).setMaxResults(maxLabels).build();
+        ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(remoteFullPath).build();
+        Image img = Image.newBuilder().setSource(imgSource).build();
+        Feature feat = Feature.newBuilder().setType(Feature.Type.LABEL_DETECTION).setMaxResults(maxLabels).build();
         AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
         requests.add(request);
 
@@ -49,18 +53,17 @@ public class GoogleLabelDetectorImpl implements ILabelDetector {
             for (AnnotateImageResponse res : responses) {
                 if (res.hasError()) {
                     System.out.format("Error: %s%n", res.getError().getMessage());
+                    return null;
                 }
-                List<FaceAnnotation> faceAnnotations = res.getFaceAnnotationsList();
-                for (FaceAnnotation annotation : faceAnnotations) {
-                    if (annotation.getDetectionConfidence() >= minConfidenceLevel){
+
+                for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
+                    if (annotation.getScore() >= minConfidenceLevel) {
                         Map<Descriptors.FieldDescriptor, Object> fields = annotation.getAllFields();
                         for (Map.Entry<Descriptors.FieldDescriptor, Object> entry : fields.entrySet()) {
                             String key = entry.getKey().getName();
                             Object value = entry.getValue();
-                            if (value instanceof Number) {
-                                Label label = new Label(key, (float) value);
-                                labels.add(label);
-                            }
+                            Label label = new Label(key, value);
+                            labels.add(label);
                         }
                     }
                 }
@@ -68,6 +71,6 @@ public class GoogleLabelDetectorImpl implements ILabelDetector {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return labels;
+        return gson.toJson(labels);
     }
 }
