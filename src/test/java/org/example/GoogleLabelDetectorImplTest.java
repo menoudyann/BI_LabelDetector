@@ -57,7 +57,7 @@ public class GoogleLabelDetectorImplTest extends TestCase {
         URL remoteFileUrl = URI.create("https://images.unsplash.com/photo-1533050487297-09b450131914?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D").toURL();
 
         //given
-        //TODO test if the remote file is available
+        URLTester.isUrlResponding(remoteFileUrl);
 
         //when
         String response = this.labelDetector.analyze(remoteFileUrl);
@@ -79,8 +79,7 @@ public class GoogleLabelDetectorImplTest extends TestCase {
         URL remoteFileUrl = URI.create("https://images.unsplash.com/photo-1533050487297-09b450131914?q=80&w=3270&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D").toURL();
 
         //given
-        //TODO test if the remote file is available
-        assertTrue(URLTester.isUrlResponding(remoteFileUrl.toString()));
+        assertTrue(URLTester.isUrlResponding(remoteFileUrl));
 
         //when
         String response = this.labelDetector.analyze(remoteFileUrl, 2, 95);

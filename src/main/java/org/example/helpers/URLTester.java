@@ -5,10 +5,9 @@ import java.net.URL;
 
 public class URLTester {
 
-    public static boolean isUrlResponding(String url) {
+    public static boolean isUrlResponding(URL u) {
         HttpURLConnection connection = null;
         try {
-            URL u = new URL(url);
             connection = (HttpURLConnection) u.openConnection();
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
