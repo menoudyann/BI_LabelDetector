@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import junit.framework.TestCase;
 import org.example.helpers.URLTester;
+import org.junit.After;
+import org.junit.Before;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +20,7 @@ public class GoogleLabelDetectorImplTest extends TestCase {
 
     protected ILabelDetector labelDetector;
 
+    @Before
     public void setUp() throws Exception {
         super.setUp();
         this.labelDetector = new GoogleLabelDetectorImpl("GOOGLE_APPLICATION_CREDENTIALS");
@@ -29,7 +32,7 @@ public class GoogleLabelDetectorImplTest extends TestCase {
         File localFile = Paths.get(localFileURL.toURI()).toFile();
 
         //given
-        //assertTrue(localFile.exists());
+        assertTrue(localFile.exists());
 
         //when
         String response = this.labelDetector.analyze(localFileURL);
@@ -41,7 +44,7 @@ public class GoogleLabelDetectorImplTest extends TestCase {
         //then
         assertTrue(labels.size() <= 10);
         for (Label label : labels) {
-            assertTrue(label.getScore() >= 0.9F);
+            assertTrue(label.getScore() >= 90 / 100F);
         }
     }
 
