@@ -3,20 +3,20 @@ package org.example;
 public class Label {
 
     protected String name;
-    protected Object value;
+    protected float score;
 
 
-    public Label(String name, Object value) {
+    public Label(String name, float score) {
         this.name = name;
-        this.value = value;
+        this.score = score;
     }
 
     public String getName() {
         return name;
     }
 
-    public Object getValue() {
-        return value;
+    public float getScore() {
+        return score;
     }
 
 }

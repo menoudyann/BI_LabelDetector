@@ -3,6 +3,7 @@ package org.example;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
@@ -31,16 +32,21 @@ public class GoogleLabelDetectorImpl implements ILabelDetector {
         }
     }
 
+    @Override
+    public String analyze(URL remoteFullPath) throws IOException {
+        return analyze(remoteFullPath, 10, 90);
+    }
+
 
     @Override
-    public String analyze(String remoteFullPath, int maxLabels, float minConfidenceLevel) throws IOException {
+    public String analyze(URL remoteFullPath, int maxLabels, float minConfidenceLevel) throws IOException {
 
         List<Label> labels = new ArrayList<>();
         Gson gson = new Gson();
 
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
-        ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(remoteFullPath).build();
+        ImageSource imgSource = ImageSource.newBuilder().setImageUri(remoteFullPath.toString()).build();
         Image img = Image.newBuilder().setSource(imgSource).build();
         Feature feat = Feature.newBuilder().setType(Feature.Type.LABEL_DETECTION).setMaxResults(maxLabels).build();
         AnnotateImageRequest request = AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
@@ -57,14 +63,9 @@ public class GoogleLabelDetectorImpl implements ILabelDetector {
                 }
 
                 for (EntityAnnotation annotation : res.getLabelAnnotationsList()) {
-                    if (annotation.getScore() >= minConfidenceLevel) {
-                        Map<Descriptors.FieldDescriptor, Object> fields = annotation.getAllFields();
-                        for (Map.Entry<Descriptors.FieldDescriptor, Object> entry : fields.entrySet()) {
-                            String key = entry.getKey().getName();
-                            Object value = entry.getValue();
-                            Label label = new Label(key, value);
-                            labels.add(label);
-                        }
+                    if (annotation.getScore() >= minConfidenceLevel/100) {
+                        Label label = new Label(annotation.getDescription(), annotation.getScore());
+                        labels.add(label);
                     }
                 }
             }
