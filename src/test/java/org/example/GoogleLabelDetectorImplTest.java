@@ -2,6 +2,7 @@ package org.example;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import io.github.cdimascio.dotenv.Dotenv;
 import junit.framework.TestCase;
 import org.example.helpers.URLTester;
 import org.junit.After;
@@ -19,16 +20,18 @@ import java.util.List;
 public class GoogleLabelDetectorImplTest extends TestCase {
 
     protected ILabelDetector labelDetector;
+    private Dotenv dotenv;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        this.dotenv = Dotenv.load();
         this.labelDetector = new GoogleLabelDetectorImpl("GOOGLE_APPLICATION_CREDENTIALS");
     }
 
     public void testAnalyze_LocalFileWithDefaultValues_ImageAnalyzed() throws IOException, URISyntaxException {
 
-        URL localFileURL = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/LabelDetector/src/main/java/org/example/datas/testLabelDetector.jpg").toURL();
+        URL localFileURL = new File("images/test.png").toURI().toURL();
         File localFile = Paths.get(localFileURL.toURI()).toFile();
 
         //given
