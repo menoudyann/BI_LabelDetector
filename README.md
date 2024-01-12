@@ -93,7 +93,7 @@ For any questions or further information, please feel free to reach out to me at
 
 ## License
 
-- [Choose the license adapted to your project](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository).
+This project is licensed under the [MIT](https://en.wikipedia.org/wiki/MIT_License) licence.
 
 ## Contact
 
