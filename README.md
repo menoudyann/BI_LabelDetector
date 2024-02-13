@@ -106,7 +106,7 @@ For any questions or further information, please feel free to reach out to me at
 
 ## License
 
-- [Choose the license adapted to your project](https://github.com/menoudyann/BI_LabelDetector/blob/main/LICENSE).
+[Choose the license adapted to your project](https://github.com/menoudyann/BI_LabelDetector/blob/main/LICENSE).
 
 ## Contact
 
