@@ -17,9 +17,10 @@ This Java microservice uses Google Cloud Vision API to extract labels from image
 Here are the prerequisites for finding work on the project.
 
 - IntelliJ IDEA 2023.2.2 (Ultimate Edition)
-- Maven
-- Google Cloud Platform account with Vision API enabled 
+- Apache Maven 3.9.5 
+- Google Cloud Platform account with Vision API V1 enabled 
 - Eclipe Temurin version 21.0.1
+- jUnit 5.8.1
 
 ### Configuration
 
@@ -38,7 +39,19 @@ GOOGLE_APPLICATION_CREDENTIALS="path/to/credentials.json"
 
 #### Dependencies 
 
-Go to the pom.xml file, then load maven changes to retrieve all the necessary dependencies.
+Go the the project root and run the following command to install the dependencies.
+
+```
+mvn clean install
+```
+### On prod environment
+
+#### Build
+
+```
+mvn clean package
+```
+
 
 ## Directory structure
 
@@ -48,20 +61,20 @@ Go to the pom.xml file, then load maven changes to retrieve all the necessary de
 │   ├── java
 │   │   └── org
 │   │       └── example
-│   │           ├── GoogleLabelDetectorImpl.java
-│   │           ├── ILabelDetector.java
-│   │           ├── Label.java
+│   │           ├── GoogleLabelDetectorImpl.java    //implementation
+│   │           ├── ILabelDetector.java             //interface
+│   │           ├── Label.java                      //label model
 │   │           ├── Main.java
 │   │           ├── datas
 │   │           │   └── testLabelDetector.jpg
 │   │           └── helpers
-│   │               └── URLTester.java
+│   │               └── URLTester.java               //URL tester
 │   └── resources
 └── test
     └── java
         └── org
             └── example
-                └── GoogleLabelDetectorImplTest.java
+                └── GoogleLabelDetectorImplTest.java             //test
 ```
 
 
@@ -93,7 +106,7 @@ For any questions or further information, please feel free to reach out to me at
 
 ## License
 
-This project is licensed under the [MIT](https://en.wikipedia.org/wiki/MIT_License) licence.
+[Choose the license adapted to your project](https://github.com/menoudyann/BI_LabelDetector/blob/main/LICENSE).
 
 ## Contact
 
