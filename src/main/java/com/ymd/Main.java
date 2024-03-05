@@ -15,5 +15,7 @@ public class Main {
 //        } catch (IOException e) {
 //            throw new RuntimeException(e);
 //        }
+
+        System.out.println("The docker container is running!");
     }
 }
