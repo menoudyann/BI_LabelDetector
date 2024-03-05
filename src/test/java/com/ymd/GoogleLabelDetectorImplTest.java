@@ -1,11 +1,13 @@
-package org.example;
+package com.ymd;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.ymd.GoogleLabelDetectorImpl;
+import com.ymd.ILabelDetector;
+import com.ymd.Label;
 import io.github.cdimascio.dotenv.Dotenv;
 import junit.framework.TestCase;
-import org.example.helpers.URLTester;
-import org.junit.After;
+import com.ymd.helpers.URLTester;
 import org.junit.Before;
 
 import java.io.File;

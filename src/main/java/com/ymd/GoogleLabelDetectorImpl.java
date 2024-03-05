@@ -1,4 +1,4 @@
-package org.example;
+package com.ymd;
 
 
 import java.io.FileInputStream;
@@ -14,13 +14,12 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.vision.v1.*;
 import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Descriptors;
 import io.github.cdimascio.dotenv.Dotenv;
 
 
 public class GoogleLabelDetectorImpl implements ILabelDetector {
 
-    protected static ImageAnnotatorClient client;
+    protected ImageAnnotatorClient client;
 
     public GoogleLabelDetectorImpl(String credentialPathname) {
         Dotenv dotenv = Dotenv.load();

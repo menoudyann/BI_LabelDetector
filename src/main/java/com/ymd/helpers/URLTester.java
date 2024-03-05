@@ -1,4 +1,4 @@
-package org.example.helpers;
+package com.ymd.helpers;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
