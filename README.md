@@ -44,12 +44,32 @@ Go the the project root and run the following command to install the dependencie
 ```
 mvn clean install
 ```
-### On prod environment
+### Development
 
-#### Build
+To build the development Docker image 
 
 ```
-mvn clean package
+docker build -t "labeldetector:dev" --target development .
+```
+
+ To run the Docker container 
+
+```
+docker run --name labeldetector-dev -p 8080:8080 labeldetector:dev
+```
+
+### Production
+
+To build the production Docker image 
+
+```
+docker build -t "labeldetector:prod" --target production .
+```
+
+ To run the Docker container 
+
+```
+docker run --name labeldetector-prod -p 8080:8080 labeldetector:prod
 ```
 
 
